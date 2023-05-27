@@ -12,7 +12,7 @@ You'll edit this file in Part 4.
 """
 import csv
 import json
-
+from helpers import datetime_to_str
 
 def write_to_csv(results, filename):
     """Write an iterable of `CloseApproach` objects to a CSV file.
@@ -29,6 +29,15 @@ def write_to_csv(results, filename):
         'designation', 'name', 'diameter_km', 'potentially_hazardous'
     )
     # TODO: Write the results to a CSV file, following the specification in the instructions.
+    with open(filename, 'w') as csv_file:
+        csv_file.write(','.join(list(fieldnames)) + '\n')
+        for close_approach in results:
+            values = list(map(str, [close_approach.time, close_approach.distance,\
+                close_approach.velocity, close_approach.neo.designation,\
+                close_approach.neo.name, close_approach.neo.diameter,\
+                close_approach.neo.hazardous]))
+            csv_file.write(','.join(values) + '\n')
+
 
 
 def write_to_json(results, filename):
@@ -43,3 +52,20 @@ def write_to_json(results, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # TODO: Write the results to a JSON file, following the specification in the instructions.
+    write_value = []
+    for close_approach in results:
+        write_value.append({
+            "datetime_utc": datetime_to_str(close_approach.time),
+            "distance_au": close_approach.distance,
+            "velocity_km_s": close_approach.velocity,
+            "neo": {
+                "designation": close_approach.neo.designation,
+                "name": close_approach.neo.name,
+                "diameter_km": close_approach.neo.diameter,
+                "potentially_hazardous": close_approach.neo.hazardous
+            }
+        })
+    with open(filename, 'w') as json_file:
+        json_str = json.dumps(write_value)
+        json_file.write(json_str)
+    

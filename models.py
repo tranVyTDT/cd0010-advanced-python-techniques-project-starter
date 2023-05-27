@@ -45,9 +45,10 @@ class NearEarthObject:
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
         self.designation = info.get('designation', '')
-        self.name = info.get('name', None)
-        self.diameter = float(info.get('diameter', float('nan')))
-        self.hazardous = bool(info.get('hazardous', False))
+        self.name = info.get('name') if info.get('name') else None
+        self.diameter = float(info.get('diameter')) if info.get('diameter') else float('nan')
+        # self.hazardous = True if info.get('hazardous') == "Y" else False if info.get('hazardous') == "N" else None
+        self.hazardous = True if info.get('hazardous') == "Y" else False
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -95,7 +96,7 @@ class CloseApproach:
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self._designation = ''
+        self._designation = info.get('_designation')
         self.time = cd_to_datetime(info.get('time'))  # TODO: Use the cd_to_datetime function for this attribute.
         self.distance = float(info.get('distance', 0.0))
         self.velocity = float(info.get('velocity', 0.0))
@@ -126,7 +127,7 @@ class CloseApproach:
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"At {self.time_str}, '{self.neo.fullname}' approaches Earth at a distance of {self.distance:.2f} au and a velocity of {self.velocity:.2f} km/s."
+        return f"At {self.time_str}, '{self.neo.fullname if self.neo else 'Empty'}' approaches Earth at a distance of {self.distance:.2f} au and a velocity of {self.velocity:.2f} km/s."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""

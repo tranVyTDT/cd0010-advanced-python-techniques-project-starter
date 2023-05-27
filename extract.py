@@ -14,6 +14,7 @@ You'll edit this file in Task 2.
 """
 import csv
 import json
+import itertools
 
 from models import NearEarthObject, CloseApproach
 
@@ -24,8 +25,24 @@ def load_neos(neo_csv_path):
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection of `NearEarthObject`s.
     """
-    # TODO: Load NEO data from the given CSV file.
-    return ()
+    near_earth_objects = []
+    with open(neo_csv_path, newline='') as csv_file:
+        reader = csv.reader(csv_file, delimiter=',')
+        headers = next(reader)
+        
+        for row in reader:
+            kwargs = {
+                "designation": row[headers.index("pdes")],
+                "name": row[headers.index("name")],
+                "diameter": row[headers.index("diameter")],
+                "hazardous": row[headers.index("pha")]
+            } 
+            near_earth_objects.append(
+                NearEarthObject(**kwargs)
+            )
+            
+
+    return near_earth_objects
 
 
 def load_approaches(cad_json_path):
@@ -35,4 +52,23 @@ def load_approaches(cad_json_path):
     :return: A collection of `CloseApproach`es.
     """
     # TODO: Load close approach data from the given JSON file.
-    return ()
+    with open(cad_json_path) as json_file:
+        json_data = json.load(json_file)
+    
+    close_approachs = []
+    fields = {field:i for i,field in enumerate(json_data.get("fields"))}
+    data = json_data.get("data")
+    
+    for la in data:
+        kwargs = {
+            "_designation": la[fields["des"]],
+            "time": la[fields["cd"]],
+            "distance": la[fields["dist"]],
+            "velocity": la[fields["v_rel"]]
+        }
+        close_approachs.append(
+            CloseApproach(**kwargs)
+        )
+
+    return close_approachs
+
