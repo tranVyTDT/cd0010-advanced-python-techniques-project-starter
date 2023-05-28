@@ -42,10 +42,8 @@ class NEODatabase:
         """
         self._neos = tuple(neos)
         self._approaches = tuple(approaches)
-
-        # TODO: What additional auxiliary data structures will be useful?
-
-        # TODO: Link together the NEOs and their close approaches.
+        self.search_neo_designation = {neo.designation: neo  for neo in self._neos}
+        self.search_neo_name = {neo.name: neo  for neo in self._neos} 
         self.link_neos_to_close_approaches()
     
     def link_neos_to_close_approaches(self):
@@ -69,11 +67,8 @@ class NEODatabase:
         :param designation: The primary designation of the NEO to search for.
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
-        # TODO: Fetch an NEO by its primary designation.
-        for neo in self._neos:
-            if neo.designation == designation:
-                return neo
-        return None
+
+        return self.search_neo_designation.get(designation, None)
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -89,12 +84,7 @@ class NEODatabase:
         :param name: The name, as a string, of the NEO to search for.
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
-        # TODO: Fetch an NEO by its name.
-        for neo in self._neos:
-            if neo.name == name:
-                return neo
-
-        return None
+        return self.search_neo_name.get(name, None)
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
@@ -110,7 +100,6 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
         for approach in self._approaches:
             if all([filter(approach) for filter in filters]):
                 yield approach
