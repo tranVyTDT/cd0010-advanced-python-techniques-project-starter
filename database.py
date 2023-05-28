@@ -21,6 +21,7 @@ class NEODatabase:
     help fetch NEOs by primary designation or by name and to help speed up
     querying for close approaches that match criteria.
     """
+
     def __init__(self, neos, approaches):
         """Create a new `NEODatabase`.
 
@@ -48,6 +49,7 @@ class NEODatabase:
         self.link_neos_to_close_approaches()
     
     def link_neos_to_close_approaches(self):
+        """Link neo to approache and vice versa."""
         for approache in self._approaches:
             neo = self.get_neo_by_designation(approache._designation)
             if neo:
